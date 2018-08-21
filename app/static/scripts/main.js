@@ -5,6 +5,7 @@ window.onload = function() {
   var dataBtn = document.getElementById("showData");
   var pdfBtn = document.getElementById("downloadPDF");
   var savePlotBtn = document.getElementById("savePlots");
+  var clearBtn = document.getElementById("clearSelection");
 
   dataBtn.onclick = function() {
     var data = document.getElementById("dataDiv");
@@ -29,6 +30,22 @@ window.onload = function() {
     post('/savePlot', {name: plotNameInput.value, data:selected_datasets_js });
     return false;
   };
+
+  clearBtn.onclick = function () {
+   alert('clear pressed');
+   var form = document.getElementById("datasets");
+   for (i=0; i<form.options.length; i=i+1) {
+     var meta = metadata[i];
+     //If this meta matches the selected input, then we select in form
+     form.options[i].selected = false; //Deselect previous selction
+//     //if(meta['spinDependency'] === selectedInput){
+//     //  form.options[i].selected = true;
+//     }
+   }
+//   //Now make sure the metadata is correct
+   bulkUpdate=true;
+   displayMetadata(form);
+  };
   //Update the initial metadata
   var datasetForm = document.getElementById("datasets");
   displayMetadata(datasetForm);
@@ -46,6 +63,45 @@ function displayMetadata(form){
   //Push the text to the html element
   var textElement = document.getElementById('datasetInfo');
   textElement.innerHTML = displayText;
+}
+
+/**
+* Notes:
+*  Only one filter is applied at a time.
+*  No support for multiple selection within a certain filter (ie CMS and LUX will result in CMS only)
+*  Does not clear other filter selections, so may appear as if multple selects are made.
+**/
+function updateFilter(selectFilter,filterType){
+  var displayText = "<h4>Select a Dataset:</h4>";
+  //Grab the main form that displays the dataset selection
+  var datasetForm = document.getElementById("datasets");
+  for (filterIndex=0; filterIndex<selectFilter.options.length; filterIndex++) {
+      if (selectFilter.options[filterIndex].selected) {
+        //Grab the filter from the selected value
+        var filter = selectFilter.options[filterIndex].value;
+        //For each dataset option (pulled from the main selection form)
+        for (datasetIndex=0; datasetIndex<datasetForm.options.length; datasetIndex++) {
+          if(metadata[datasetIndex][filterType] == filter){
+             //Wrap the metadata in a clickable element- take action when the dataset is selected
+             displayText += "<div class='filteredOption' onClick='selectDataset("+datasetIndex+")'>";
+             displayText += getMetadataDisplay(metadata[datasetIndex]);
+             displayText += "</div>"
+
+          }
+        }
+      }
+  }
+  //Updated the selectable datasets from the filtered option
+  var textElement = document.getElementById('filterDatasets');
+  textElement.innerHTML = displayText;
+}
+//Select/Deselect the dataset option from the main list
+function selectDataset(datasetIndex){
+  var datasetForm = document.getElementById("datasets");
+  datasetForm.options[datasetIndex].selected = !(datasetForm.options[datasetIndex].selected);
+  //Focus the main select form, update the metadata for the options selected in the main select form
+  datasetForm.focus();
+  displayMetadata(datasetForm);
 }
 
 //Ensures all selected data sets have the same spin consistency
@@ -144,7 +200,8 @@ function getMetadataDisplay(metadata){
   displayText += metadata.spinDependency;
   displayText += "</div>";
   displayText += "</div>";
-  displayText = displayText + '<hr>';
+  displayText += '<hr>';
+
   return displayText;
 }
 
