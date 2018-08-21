@@ -53,7 +53,8 @@ main_blueprint = Blueprint('main', __name__, template_folder='templates')
 # The Home page is accessible to anyone
 @main_blueprint.route('/')
 def home_page():
-    return render_template('main/home_page.html')
+    #Re-direct to the plotter. The actual 'homepage' is a login/registration page
+    return redirect(url_for('main.dmplotter'))
 
 
 # The User page is accessible to authenticated users (users that have logged in)
@@ -100,7 +101,6 @@ def theory_page():
     return render_template('theory.html')
 
 @main_blueprint.route('/dmplotter', methods=['GET', 'POST'])
-#@login_required
 def dmplotter():
     known_datasets = get_datasets()
     gu, gd, gs = get_gSM()
@@ -115,6 +115,7 @@ def dmplotter():
     dataset_upload = UploadForm()
 
     global selected_datasets
+    print(selected_datasets)
 
     if request.method == 'POST':
         # check if the post request has the file part
@@ -165,6 +166,7 @@ def dmplotter():
     script2, div2 = components(p2, CDN)
     script3, div3 = components(legendPlot,CDN)
     return render_template('dmplotter.html',
+                           _debug=app.debug,_signedIn=current_user.is_authenticated,
                            plot_script1=script1, plot_div1=div1,
                            plot_script2=script2, plot_div2=div2,
                            plot_script3=script3, plot_div3=div3,
@@ -194,6 +196,7 @@ def updateValues():
     return redirect(url_for('main.dmplotter'))
 
 @main_blueprint.route('/savePlot', methods=['GET', 'POST'])
+@login_required
 def savePlot():
     savedPlotName = request.form['name']
     selected_datasets = request.form['data'].split(",")
@@ -279,6 +282,7 @@ def generatePDF():
 '''
 
 @main_blueprint.route('/upload', methods=['GET', 'POST'])
+@login_required
 def upload():
     form = UploadForm(CombinedMultiDict((request.files, request.form)))
     if form.validate_on_submit():

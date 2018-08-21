@@ -47,7 +47,7 @@ def dd2lhc_SI(df, modifier): #for scalar and vector interactins, scalar should b
     else:
         df['m_med'] = np.power((2*gu+gd)*gDM*df['mu_nDM'], 0.5)/np.power(math.pi*df['sigma_in_GeV'],0.25);
 
-def lhc2dd_SD(df,modifier='proton'):
+def lhc2dd_SD(df,modifier):
     # calculate mu
     df['mu_nDM'] = mn * df['m_DM'] / (mn + df['m_DM'])
 
@@ -60,7 +60,7 @@ def lhc2dd_SD(df,modifier='proton'):
     df['sigma_in_GeV'] = 3 * np.power(f * df['mu_nDM'], 2.) / (math.pi * np.power(df['m_med'], 4.))
     df['sigma'] = df['sigma_in_GeV']/conv_units
 
-def lhc2dd_SI(df,modifier='scalar'):
+def lhc2dd_SI(df,modifier):
     # calculate mu
     df['mu_nDM'] = mn * df['m_DM'] / (mn + df['m_DM'])
 

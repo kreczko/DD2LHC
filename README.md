@@ -47,6 +47,16 @@ Use `python manage.py runserver --help` for a list of runserver options.
 
 ---
 ## Development
+The `DEBUG` setting found in `app/local_settings.py` (if set to true) will show the full set of datasets, (legacy select datasets from list).
+The following account is setup for development for login:
+
+Username: `member@example.com`
+Password: `Password1`
+
+**Note:** You must be logged in to upload datasets and save plots.
+
+**If modifying the *.js files, be sure to empty cache during development as your browser may not always request these files**
+
 While there are many files and packages used to create DM Limiter, in practice you will only need to modify the following files during maintenance development. DM Limiter is a `Flask` application built using `python`. `Javascript` is used to handle runtime logic in the browser, and `HTML` and `CSS` is used to describe the template pages used to render the UI.
 
 `app/dmplotter/plotter.py` Business logic that reads data, applies conversions, defines plot configurations

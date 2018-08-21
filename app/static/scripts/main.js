@@ -5,6 +5,10 @@ window.onload = function() {
   var dataBtn = document.getElementById("showData");
   var pdfBtn = document.getElementById("downloadPDF");
   var savePlotBtn = document.getElementById("savePlots");
+  var allBtn = document.getElementById("allDatasetsButton");
+  var clearFilterBtn = document.getElementById("clearAllFiltersButton");
+
+  var clearBtn = document.getElementById("clearSelection");
 
   dataBtn.onclick = function() {
     var data = document.getElementById("dataDiv");
@@ -18,17 +22,56 @@ window.onload = function() {
     post('/pdf', {name: 'Donnie Darko'});
     return false;
   };
-
-  savePlotBtn.onclick = function () {
-    var plotNameInput = document.getElementById("plotName");
-    if(plotNameInput.value == ''){
-      alert('Please provide a name for the data set.');
+  //Save Plot button is only visible if user is logged in
+  if(savePlotBtn){
+      savePlotBtn.onclick = function () {
+      var plotNameInput = document.getElementById("plotName");
+      if(plotNameInput.value == ''){
+        alert('Please provide a name for the data set.');
+        return false;
+      }
+      //post('/savePlot', {name: 'Set E',data:{{selected_datasets|tojson}} });
+      post('/savePlot', {name: plotNameInput.value, data:selected_datasets_js });
       return false;
+    };
+  }
+  allBtn.onclick = function () {
+    var displayText = "<h4>Select a Dataset:</h4>";
+    //Grab the 'hidden' form of the complete list of datasets
+    var datasetForm = document.getElementById("datasets");
+    for (datasetIndex=0; datasetIndex<datasetForm.options.length; datasetIndex++) {
+         //Wrap the metadata in a clickable element- take action when the dataset is selected
+         displayText += "<div class='filteredOption' onClick='selectDataset("+datasetIndex+")'>";
+         displayText += getMetadataDisplay(metadata[datasetIndex]);
+         displayText += "</div>"
     }
-    //post('/savePlot', {name: 'Set E',data:{{selected_datasets|tojson}} });
-    post('/savePlot', {name: plotNameInput.value, data:selected_datasets_js });
-    return false;
+    //Updated the selectable datasets from the filtered option
+    var textElement = document.getElementById('filterDatasets');
+    textElement.innerHTML = displayText;
   };
+
+  clearFilterBtn.onclick = function () {
+    var filters = document.getElementsByClassName("filterBox");
+    for (var i = 0; i < filters.length; i++) {
+      for (var j = 0; j < filters[i].options.length; j++) {
+          filters[i].options[j].selected = false;
+      }
+    }
+    //Updated the selectable datasets from the filtered option
+    var textElement = document.getElementById('filterDatasets');
+    textElement.innerHTML = '';
+  };
+
+  clearBtn.onclick = function () {
+   var form = document.getElementById("datasets");
+   for (i=0; i<form.options.length; i=i+1) {
+     var meta = metadata[i];
+     form.options[i].selected = false; //Deselect the selctions
+   }
+   bulkUpdate=true;
+   displayMetadata(form);
+  };
+
   //Update the initial metadata
   var datasetForm = document.getElementById("datasets");
   displayMetadata(datasetForm);
@@ -170,9 +213,9 @@ function getMetadataDisplay(metadata){
   displayText += "<div class='col col-2' style='font-weight:bold'>";
   displayText += "Comment:";
   displayText += "</div>";
-  displayText += "<div class='col'>";
+  displayText += "<div class='col'><i>";
   displayText += metadata.dataComment;
-  displayText += "</div>";
+  displayText += "</i></div>";
   displayText += "</div>";
 
   displayText += "<div class='row'>";

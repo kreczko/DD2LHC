@@ -6,7 +6,7 @@ import os
 # *****************************
 
 # DO NOT use "DEBUG = True" in production environments
-DEBUG = True
+DEBUG = False
 
 # DO NOT use Unsecure Secrets in production environments
 # Generate a safe one with:
