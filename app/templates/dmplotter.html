@@ -42,9 +42,11 @@
   			<li>Select two or more limit samples</li>
   			<li>Create comparison plot</li>
   			<li>Download PDF for publications.</li>
+				<li>To save plots or upload datasets, please create an account.</li>
   			<li>Use XXX to cite us</li>
   		</ul>
   	</div>
+		{% if _signedIn %}
 		<div class="col justify-content-end">
 			<h3>Upload new dataset</h3>
 			<form method="POST" action="/upload" enctype="multipart/form-data">
@@ -55,6 +57,7 @@
 			</div>
 			</form>
 		</div>
+		{% endif %}
 	</div>
 
 <div class="headerTitle">
@@ -64,15 +67,23 @@
 <div class="datainput">
 	<form method="POST" action="/dmplotter" name="dataset_selection">
   	<div class="row justify-content-start">
+		{% if not _debug %}
+		<div style="display:none">
+		{% endif %}
 			<div class="col">
 				<h3>Select datasets to plot:</h3>
 					{{ dataset_selection.hidden_tag() }}
 					{{ dataset_selection.datasets(class="selectpicker",**{"onchange":"displayMetadata(this)"}) }}
 			</div>
+		{% if not _debug %}
+		</div>
+		{% endif %}
 
 		<div class="col justify-content-end">
+		<!-- Removed in place of filtering selection- this conditional select used to select *all* SI or SD datasets for plotting.
 			<h3>Conditionally Select Datasets:</h3>
 				{{dataset_selection.conditional_input(**{"onchange":"updateConditionalSelect(this)"}) }}
+		-->
 				<h3>Saved Plots:</h3>
 				{{ dataset_selection.hidden_tag() }}
 				{{ dataset_selection.savedPlots(class="selectpicker",**{"onchange":"selectPlots(this)"}) }}
@@ -104,13 +115,15 @@
 			</select>
 
 			<select multiple class='filterBox' onchange="updateFilter(this,'year')">
-					<option>2018</option>					
+					<option>2018</option>
 					<option>2017</option>
 					<option>2016</option>
 		 	</select>
 
 
 			</div>
+			<a id="allDatasetsButton" href="#" class="btn btn-outline-primary plotBtn">View All</a>
+			<a id="clearAllFiltersButton" href="#" class="btn btn-outline-primary plotBtn">Clear</a>
 		</div>
 	</div>
 
@@ -154,7 +167,7 @@
 			</div></div>
 		</div>
   	</div>
-	
+
 
 </div>
 
@@ -185,8 +198,10 @@
 					{% endif %}
 				</div>
 				<div class="col">
-					<input type="text" id="plotName" name="plotName" placeholder="Plot Name"><br>
-					<a id="savePlots" href="#" class="btn btn-outline-primary plotBtn">Save Plots</a>
+					{% if _signedIn %}
+						<input type="text" id="plotName" name="plotName" placeholder="Plot Name"><br>
+						<a id="savePlots" href="#" class="btn btn-outline-primary plotBtn">Save Plots</a>
+					{% endif %}
 					<hr>
 					<a id="showData" href="#" class="btn btn-outline-primary plotBtn">Show Data</a>
 					<a id="downloadPDF" href="pdf.html" class="btn btn-outline-primary plotBtn">Download PDF</a>
@@ -207,7 +222,7 @@
 			</div>
 			<div class='row'>
 				<div class='col col-3' style='font-weight:bold'>Comment:</div>
-				<div class='col'>{{data['dataComment']}}</div>
+				<div class='col'><i>{{data['dataComment']}}</i></div>
 			</div>
 			<div class='row'>
 				<div class='col col-3' style='font-weight:bold'>Reference:</div>

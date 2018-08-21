@@ -115,6 +115,6 @@ def init_email_error_handler(app):
 def getUserPath():
     #If there is no user logged in (ie develop mode), return temp directory
     path = 'temp'
-    if(current_user.id):
+    if current_user.is_authenticated:
         path = str(current_user.id)
     return path
