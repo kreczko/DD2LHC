@@ -44,7 +44,7 @@ def getSavedPlots():
     userPlots  = {}
     if(os.path.isfile('data/'+getUserPath()+'/userPlots.json')):
         userPlots = json.load(open('data/'+getUserPath()+'/userPlots.json'))
-    allPlots = {key: value for (key, value) in ({"":""}.items() + globalPlots.items() + userPlots.items())}
+    allPlots = {**globalPlots, **userPlots}
     return allPlots
 #End DM
 
