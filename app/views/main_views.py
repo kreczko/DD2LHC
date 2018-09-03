@@ -24,6 +24,7 @@ import numpy as np
 from app.dmplotter.plotter import get_data, get_datasets, get_metadata, set_SI_modifier, get_SI_modifier, getSimplifiedPlot, getDDPlot, getLegendPlot, validateFile
 from app.dmplotter.forms import DatasetForm, UploadForm, Set_gSM_Form
 from app.dmplotter.conversion import set_gSM, get_gSM
+from app.views.dashboard import dashboard
 # DM Default
 ALLOWED_EXTENSIONS = set(['xml'])
 selected_datasets = []
@@ -193,6 +194,10 @@ def dmplotter():
         gSM_gU=gu, gSM_gD=gd, gSM_gS=gs,
     )
 
+
+@main_blueprint.route('/dmdashboard', methods=['GET', 'POST'])
+def dmdashboard():
+    return dashboard()
 
 @main_blueprint.route('/updateValues', methods=['GET', 'POST'])
 def updateValues():
