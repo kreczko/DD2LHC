@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 import os
 from glob import glob
@@ -23,7 +24,7 @@ def printAllExperiments():
     for dataset in datasets:
         metadata = untangle.parse(dataset)
         experiment = metadata.limit.experiment.cdata
-        print experiment
+        print(experiment)
 
 class TestExperiment(unittest.TestCase):
 
