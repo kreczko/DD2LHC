@@ -11,6 +11,9 @@ from bokeh.models import ColumnDataSource, Panel
 from bokeh.models.widgets import TableColumn, DataTable
 from bokeh.embed import components
 from bokeh.plotting import figure
+from bokeh.resources import INLINE
+from bokeh.util.string import encode_utf8
+
 
 from flask import render_template
 
@@ -35,7 +38,13 @@ def dashboard():
     # Put all the tabs into one application
     tabs = Tabs(tabs=[tab1, tab2])
     script, div = components(tabs)
-    return render_template('dashboard.html', script=script, div=div)
+
+    js_resources = INLINE.render_js()
+    css_resources = INLINE.render_css()
+
+    html = render_template(
+        'dashboard.html', script=script, div=div, js_resources=js_resources, css_resources=css_resources)
+    return encode_utf8(html)
 
 
 def test_tab(data):
