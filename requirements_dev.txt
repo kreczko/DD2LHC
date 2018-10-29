@@ -1,0 +1,21 @@
+dill==0.2.6
+Flask==0.12.1
+gunicorn==19.7.1
+Jinja2==2.9.6
+oauth==1.0.1
+oauthlib==2.0.2
+requests==2.7.0
+simplejson==3.10.0
+bokeh==0.12.14
+WTForms==2.1
+Flask-WTF==0.14.2
+pandas==0.20.3
+untangle==1.1.1
+# Flask Packages
+Flask-Login==0.4.0
+Flask-Migrate==2.0.2
+Flask-Script==2.0.5
+Flask-SQLAlchemy==2.1
+git+https://github.com/lingthio/Flask-User.git@master#egg=Flask-User
+python-dotenv
+pytest>3.5

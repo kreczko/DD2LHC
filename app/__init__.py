@@ -12,6 +12,7 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_user import UserManager, current_user
 from flask_wtf.csrf import CSRFProtect
 
+from . import app_commands as commands
 
 # Instantiate Flask extensions
 csrf_protect = CSRFProtect()
@@ -73,6 +74,8 @@ def create_app(extra_config_settings={}):
     def context_processor():
         return dict(user_manager=user_manager)
 
+    register_commands(app)
+
     return app
 
 
@@ -115,6 +118,13 @@ def init_email_error_handler(app):
 def getUserPath():
     #If there is no user logged in (ie develop mode), return temp directory
     path = 'temp'
-    if current_user.is_authenticated:
-        path = str(current_user.id)
+    # if current_user.is_authenticated:
+    #     path = str(current_user.id)
     return path
+
+def register_commands(app):
+    """Register Click commands."""
+    app.cli.add_command(commands.test)
+    app.cli.add_command(commands.lint)
+    app.cli.add_command(commands.clean)
+    app.cli.add_command(commands.urls)
