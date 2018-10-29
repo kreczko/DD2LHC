@@ -19,3 +19,4 @@ Flask-SQLAlchemy==2.1
 git+https://github.com/lingthio/Flask-User.git@master#egg=Flask-User
 python-dotenv
 pytest>3.5
+flake8
